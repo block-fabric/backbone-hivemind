@@ -30,8 +30,8 @@ if(BT_WITH_NET)
 endif()
 
 if(BT_WITH_NET AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
-  add_library(hivemind_node STATIC src/node.cpp src/side_tips.cpp src/wallet.cpp src/app.cpp src/rpc_node.cpp src/rpc_markets.cpp)
-  target_link_libraries(hivemind_node PUBLIC hivemind_core bt_net)
+  add_library(hivemind_node STATIC src/node.cpp src/side_tips.cpp src/wallet.cpp src/app.cpp src/rpc_node.cpp src/rpc_markets.cpp src/appui.cpp)
+  target_link_libraries(hivemind_node PUBLIC hivemind_core bt_net bt_appui)
   # drop-in names: truthcoin-dc v0.20.0 ships `truthcoin` and `truthcoin-cli`
   add_executable(truthcoin src/main.cpp)
   target_link_libraries(truthcoin PRIVATE hivemind_node)

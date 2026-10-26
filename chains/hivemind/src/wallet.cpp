@@ -5,7 +5,10 @@
 #include <hivemind/json.h>
 #include <hivemind/math.h>
 
+#include <bt/crypto.h>
 #include <bt/ecies.h>
+
+#include <sodium.h>
 
 #include <algorithm>
 #include <cstring>
@@ -103,6 +106,17 @@ bt::ByteArray<64> Wallet::need_seed()
     auto s = seed();
     if (!s) throw WalletError("no seed has been set");
     return *s;
+}
+
+std::optional<Hash32> Wallet::seed_digest(std::string_view label)
+{
+    std::lock_guard<std::recursive_mutex> l(mu_);
+    auto s = seed();
+    if (!s) return std::nullopt;
+    const uint8_t zero = 0;
+    Hash32 h = bt::sha256_parts({bt::ByteSpan(reinterpret_cast<const uint8_t*>(label.data()), label.size()), bt::ByteSpan(&zero, 1), s->span()});
+    sodium_memzero(s->data(), s->size());
+    return h;
 }
 
 bool Wallet::has_seed()

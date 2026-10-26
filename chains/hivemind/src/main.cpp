@@ -7,6 +7,7 @@
 // http://localhost:50051) and JSON-RPC methods. No GUI: without --headless it runs headless.
 // Our own options use the --bt- prefix; unknown flags are reported and ignored.
 #include <hivemind/app.h>
+#include <hivemind/appui.h>
 
 #include <bt/frost.h>
 #include <bt/fsperm.h>
@@ -83,6 +84,7 @@ static void usage()
         "      --bt-rebuild-side-tips                     Rebuild the side-tips index from the mainchain at start\n"
         "      --bt-no-p2p                                Disable P2P networking\n",
         default_datadir().c_str(), VERSION);
+    std::printf("\n%s", bt::appui::usage().c_str());
 }
 
 int main(int argc, char** argv)
@@ -97,7 +99,19 @@ int main(int argc, char** argv)
     bool headless = false;
     std::vector<std::string> unknown;
     bt::jsonrpc::Options rpc_opts;
+    bt::appui::AppOptions app_opts;
     for (int i = 1; i < argc; i++) {
+        // Our app layer's options (--bt-app-*): beside the LayerTwo ones, never instead of one.
+        {
+            std::string app_err;
+            if (bt::appui::take_option(app_opts, argc, argv, i, app_err)) {
+                if (!app_err.empty()) {
+                    std::fprintf(stderr, "error: %s\n", app_err.c_str());
+                    return 2;
+                }
+                continue;
+            }
+        }
         std::string a = argv[i], val;
         bool has_eq = false;
         if (a.rfind("--", 0) == 0) {
@@ -285,8 +299,32 @@ int main(int argc, char** argv)
         }
     }
     LOG_INFO("JSON-RPC on %s (%zu methods)", rpc_addr.to_string().c_str(), pub.methods().size());
+    // Our app layer (--bt-app-rpc-port): a server of its own; the LayerTwo servers above are the same with or without it.
+    std::unique_ptr<AppLayer> app_layer;
+    if (app_opts.enabled) {
+        const char* names[] = {"betanet", "forknet", "regtest", "signet"};
+        app_layer = std::make_unique<AppLayer>(app, names[static_cast<int>(cfg.network)], cfg.datadir, app_opts);
+        if (!app_layer->start(err)) {
+            LOG_ERROR("app RPC: %s", err.c_str());
+            pub.stop();
+            priv.stop();
+            node.stop();
+            return 1;
+        }
+    }
+    if (app_opts.exit_with_stdin) {
+        // The app that started this node holds our standard input: when it goes (even killed), we stop.
+        std::thread([] {
+            char buf[64];
+            while (std::fread(buf, 1, sizeof(buf), stdin) > 0) {
+            }
+            LOG_INFO("standard input closed: stopping");
+            g_stop = true;
+        }).detach();
+    }
     while (!g_stop) std::this_thread::sleep_for(std::chrono::milliseconds(200));
     LOG_INFO("shutting down");
+    if (app_layer) app_layer->stop();
     pub.stop();
     priv.stop();
     node.stop();

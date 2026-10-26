@@ -55,6 +55,17 @@ add_dependencies(hivemind_math_ffi hivemind_math_ffi_build)
 
 add_subdirectory(chains/hivemind)
 
+# Our app of Hivemind (doc/app.md): hivemind-app, the node (truthcoin) with our interface; and its pages as a pack for the
+# unified wallet (target hivemind-app-pack). Needs WebKitGTK (Linux) or WebView2 (Windows), npm, and the sidechain
+# template's repository (BT_KIT_DIR) at the commit of app/kit.commit.
+option(BT_BUILD_APP "Build hivemind-app" OFF)
+if(BT_BUILD_APP)
+  include(core/cmake/BtDesktopApp.cmake)
+  bt_desktop_app(hivemind-app STEM hivemind NAME Hivemind VERSION ${PROJECT_VERSION}
+                 CHAIN ${CMAKE_SOURCE_DIR}/app/chain MANIFEST ${CMAKE_SOURCE_DIR}/app/manifest.json
+                 KIT_COMMIT_FILE ${CMAKE_SOURCE_DIR}/app/kit.commit MAIN ${CMAKE_SOURCE_DIR}/chains/hivemind/app/main.cpp NODE_TARGET truthcoin)
+endif()
+
 if(BT_BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)

@@ -1,0 +1,341 @@
+/* The pages of Hivemind: shared pieces, in the colour tokens of themes.css only (text in the text
+   tokens; the colours of the states are for lines, dots and bars, never for text). */
+
+/* The colour of a state of a market: --hm-c, set by .hm-c0 ... .hm-c7 (states beyond take them again).
+   No (state 0) in the colour of a loss, Yes (state 1) in the accent. */
+.hm-c0 { --hm-c: var(--negative); }
+.hm-c1 { --hm-c: var(--accent); }
+.hm-c2 { --hm-c: var(--warning); }
+.hm-c3 { --hm-c: var(--link); }
+.hm-c4 { --hm-c: var(--text-muted); }
+.hm-c5 { --hm-c: var(--accent-strong); }
+.hm-c6 { --hm-c: var(--positive); }
+.hm-c7 { --hm-c: var(--line-strong); }
+
+.hm-dot {
+  display: inline-block;
+  flex: none;
+  width: 0.62rem;
+  height: 0.62rem;
+  border-radius: 50%;
+  background: var(--hm-c);
+}
+
+/* A chance, as a bar under the name of its state. */
+.hm-bar {
+  position: relative;
+  height: 0.42rem;
+  border-radius: 999px;
+  background: var(--raised);
+  overflow: hidden;
+}
+.hm-bar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: var(--hm-c);
+}
+
+/* A bar with, across it, the mark of the market's last price before trading closed (OutcomeBar.svelte): a thin line
+   in the faint text colour, ringed in the surface so that it shows on the fill and on the track alike. */
+.hm-barwrap {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+.hm-barwrap > .hm-bar {
+  display: block;
+}
+.hm-mark {
+  position: absolute;
+  top: -0.2rem;
+  bottom: -0.2rem;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--text-muted);
+  box-shadow: 0 0 0 1px var(--surface);
+}
+/* The key of that mark, in a line of words. */
+.hm-mark-key {
+  display: inline-block;
+  flex: none;
+  width: 2px;
+  height: 0.85rem;
+  margin: 0 0.2rem 0 0.1rem;
+  border-radius: 1px;
+  background: var(--text-muted);
+  vertical-align: -0.12rem;
+}
+/* What a market came to: the outcome that won in the colour of a gain, those that lost muted (their words in the
+   muted text colour, their dot faded), those a resolved decision ruled out faded too. */
+.hm-won {
+  --hm-c: var(--positive);
+}
+.hm-lost .hm-bar > span,
+.hm-out .hm-bar > span {
+  opacity: 0.4;
+}
+.hm-row-lost {
+  color: var(--text-muted);
+}
+.hm-row-lost .hm-dot,
+.hm-row-out .hm-dot {
+  opacity: 0.45;
+}
+.hm-row-out {
+  color: var(--text-muted);
+}
+/* The mark of the outcome that won, in place of its dot. */
+.hm-check {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--positive);
+  color: var(--surface);
+}
+/* "Won", "Tie", "Resolved: Yes": chips of a result, in the soft colour of a gain with the text colour (the positive colour
+   on its soft background is under 4.5:1 in some themes). */
+.hm-result {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  background: var(--accent-soft);
+  color: var(--text);
+}
+.hm-result.tie {
+  background: var(--raised);
+}
+.hm-result .hm-check {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+/* Chips to pick from: filters, amounts. */
+.hm-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.hm-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 1.9rem;
+  padding: 0 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 550;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.hm-chip:hover {
+  color: var(--text);
+  border-color: var(--line-strong);
+}
+.hm-chip[aria-pressed='true'],
+.hm-chip[aria-checked='true'] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--text);
+}
+.hm-chip .count {
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+/* On the soft accent of a chip pressed, the faint text falls under 4.5:1 in Light (4.45): the colour of the text
+   (audit port-1 #11). */
+.hm-chip[aria-pressed='true'] .count,
+.hm-chip[aria-checked='true'] .count {
+  color: var(--text);
+}
+
+/* A grid of cards (markets, decisions to vote on). */
+.hm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
+  gap: 0.9rem;
+}
+
+/* Figures in a row. */
+.hm-figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(10.5rem, 100%), 1fr));
+  gap: 0.8rem;
+}
+.hm-figure {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.85rem 1rem;
+  min-width: 0;
+}
+.hm-figure strong {
+  font-size: 1.35rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A stage of a decision or a market. */
+.hm-stage {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: var(--raised);
+  color: var(--text-muted);
+}
+.hm-stage.live {
+  background: var(--accent-soft);
+  color: var(--positive);
+}
+.hm-stage.vote {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+.hm-stage.done {
+  background: var(--raised);
+  color: var(--text-muted);
+}
+.hm-stage.bad {
+  background: var(--danger-soft);
+  color: var(--negative);
+}
+
+/* Values that rise or fall. */
+.hm-up {
+  color: var(--positive);
+}
+.hm-down {
+  color: var(--negative);
+}
+
+/* A table of the pages, the kit's sidechain table look. */
+.hm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.hm-table th {
+  padding: 0.5rem 0.8rem;
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.hm-table td {
+  padding: 0.55rem 0.8rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+.hm-table tr:last-child td {
+  border-bottom: 0;
+}
+.hm-table .end {
+  text-align: right;
+}
+.hm-table tbody tr.click {
+  cursor: pointer;
+}
+.hm-table tbody tr.click:hover,
+.hm-table tbody tr.click:focus-visible {
+  background: var(--surface-2);
+  outline: none;
+}
+.hm-table .cut {
+  max-width: 22rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hm-wrap {
+  overflow-x: auto;
+  container-type: inline-size;
+}
+/* In a narrow panel (a window of 480 px), a table is a list of cards: every cell under the words of its column
+   (use:stacked), so that Worth, Profit or loss and Stage are not hidden behind a scroll (audit port-1 #9). */
+@container (max-width: 36rem) {
+  table.hm-table,
+  table.hm-table tbody,
+  table.hm-table tr,
+  table.hm-table td {
+    display: block;
+  }
+  table.hm-table thead {
+    display: none;
+  }
+  table.hm-table tr {
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  table.hm-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.2rem 0.8rem;
+    border: 0;
+    text-align: right;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  table.hm-table td[data-label]::before {
+    content: attr(data-label);
+    flex: none;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    text-align: left;
+  }
+  table.hm-table td.cut {
+    max-width: none;
+    white-space: normal;
+  }
+}
+
+/* A line of help under a field, a problem of a form. */
+.hm-help {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.hm-problems {
+  margin: 0;
+  padding: 0.6rem 0.9rem 0.6rem 2rem;
+  border: 1px solid var(--warning);
+  border-radius: var(--radius-m);
+  background: var(--warning-soft);
+  color: var(--text);
+  font-size: 0.88rem;
+}
+.hm-empty {
+  margin: 0;
+  padding: 1.6rem 1.2rem;
+  text-align: center;
+  color: var(--text-muted);
+}

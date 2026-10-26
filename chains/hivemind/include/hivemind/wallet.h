@@ -53,6 +53,8 @@ public:
     Wallet(const std::string& path, Node& node, bool spend_zero_conf_change = true);
     bool has_seed();
     void set_seed(const bt::ByteArray<64>& seed);
+    /** SHA-256(label 0x00 seed), or nothing without a seed: a public fingerprint of the seed (the app layer's), never the seed. */
+    std::optional<Hash32> seed_digest(std::string_view label);
     void set_seed_from_mnemonic(const std::string& mnemonic);
     bool spend_zero_conf_change() const { return spend_zero_conf_change_; }
 

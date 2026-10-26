@@ -42,6 +42,20 @@ build/tests/bt_tests
 crates.io sha256 checksums; `rust/fetch-vendor.sh` vendors them and checks the whole tree
 against `rust/VENDOR.sha256`. The vendored sources (62 MB) are not committed.
 
+## The app (hivemind-app)
+
+Our sidechain app on this node: the sidechain template's window, trusted dialog and interface kit, with pages for
+Hivemind's data model (markets and trading, creating decisions and markets, the voting center and Votecoin, the
+decisions and periods, payouts, paid-out markets with their result at a glance); the node (`truthcoin`) runs as the
+app's child, unchanged (consensus and the LayerTwo RPC byte for byte), the app talking to its separate, authenticated
+app RPC. The same pages are a pack for the unified wallet. See `doc/app.md` and `core/doc/app.md`.
+
+```
+cmake -S . -B build-app -DBT_BUILD_APP=ON -DBT_KIT_DIR=<sidechain-template repo>   # GTK 3, WebKitGTK 4.1, npm, cargo
+~/skydoge/tools/build.sh ~/skydoge/backbone-hivemind-app build-app
+build-app/chains/hivemind/hivemind-app
+```
+
 ## Run on betanet
 
 ```

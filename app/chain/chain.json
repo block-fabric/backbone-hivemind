@@ -1,0 +1,38 @@
+{
+  "comment": "Hivemind (Truthcoin) on eCash, our app of the LayerTwo-compatible drop-in node (doc/app.md): read by core/cmake/BtDesktopApp.cmake (the host's chainconfig.h) and by the interface (chain/config.ts). The networks are the node's: main = betanet (eCash's betanet), test = forknet; slot 13 as on eCash. The node is LayerTwo's truthcoin (app/manifest.json program).",
+  "name": "Hivemind",
+  "bin": "hivemind",
+  "role": "sidechain",
+  "coin": { "ticker": "ECX", "name": "eCash" },
+  "uriScheme": "hivemind",
+  "blockTarget": 600,
+  "brand": {
+    "color": "#f5b83d",
+    "iconHue": 0,
+    "mark": ["M16 3.5l10.8 6.25v12.5L16 28.5 5.2 22.25V9.75z", "M10.5 19.5l3.8-3.8 2.9 2.9 4.3-5.1", "M21.5 13.5v3"]
+  },
+  "networks": {
+    "main": { "p2p": 4013, "rpc": 6013, "hrp": "", "pubkey": 0, "script": 0 },
+    "test": { "p2p": 4013, "rpc": 6013, "hrp": "", "pubkey": 0, "script": 0 },
+    "signet": { "p2p": 4013, "rpc": 6013, "hrp": "", "pubkey": 0, "script": 0 },
+    "regtest": { "p2p": 4013, "rpc": 6013, "hrp": "", "pubkey": 0, "script": 0 }
+  },
+  "mainchain": {
+    "name": "eCash",
+    "ticker": "ECX",
+    "uriScheme": "ecash",
+    "networks": {
+      "main": { "rpc": 50051, "hrp": "bc", "pubkey": 0, "script": 5 },
+      "test": { "rpc": 50051, "hrp": "bc", "pubkey": 0, "script": 5 },
+      "signet": { "rpc": 50051, "hrp": "tb", "pubkey": 111, "script": 196 },
+      "regtest": { "rpc": 50051, "hrp": "bcrt", "pubkey": 111, "script": 196 }
+    }
+  },
+  "links": {
+    "website": "https://blockfab.org/drivechains/",
+    "source": "https://github.com/block-fabric/backbone-hivemind",
+    "issues": "https://github.com/block-fabric/backbone-hivemind/issues",
+    "guide": "https://github.com/block-fabric/backbone-hivemind/blob/main/doc/app.md"
+  },
+  "drop": ["sidechains", "sidechain-nodes", "mine", "wallets", "advanced", "messages", "psbt", "multisig", "proof", "timestamp", "crypto", "tools", "addresses", "bmm", "kit"]
+}
