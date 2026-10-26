@@ -1,0 +1,1 @@
+b79970f7358857f0a219f367859ea97d2748bd96702293d106fbeb40a1a4296f  vendor/ (cargo vendor --locked --versioned-dirs of hivemind_math_ffi/Cargo.lock)

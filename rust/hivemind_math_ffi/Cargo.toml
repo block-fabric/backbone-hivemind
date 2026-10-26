@@ -1,0 +1,36 @@
+[package]
+name = "hivemind_math_ffi"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "Hivemind drop-in: truthcoin-dc v0.20.0's own lib/math (LMSR, allocation, Sztorc/SVD consensus, decision pricing) and types/tx_pow.rs behind a small C ABI, built from their unmodified sources (third_party/truthcoin-dc) with the dependency versions of their Cargo.lock"
+publish = false
+
+[lib]
+crate-type = ["staticlib", "rlib"]
+path = "src/lib.rs"
+
+# Versions pinned to EXACTLY those in truthcoin-dc v0.20.0 (aa8b3ea) Cargo.lock: the
+# consensus floats depend on nalgebra/matrixmultiply/ndarray/libm code, so a newer
+# release could change a last bit. scripts/check-lock.sh compares both lockfiles.
+[dependencies]
+blake3 = "=1.8.3"
+borsh = { version = "=1.6.0", features = ["derive"] }
+const-hex = "=1.19.3"
+libm = "=0.2.16"
+nalgebra = "=0.33.3"
+ndarray = "=0.15.6"
+serde = { version = "=1.0.229", features = ["derive"] }
+sha2 = "=0.10.9"
+sha3 = "=0.10.9"
+thiserror = "=2.0.20"
+tracing = "=0.1.44"
+utoipa = { version = "=5.4.0", default-features = false, features = ["macros", "non_strict_integers"] }
+
+# Their workspace builds release with the default profile (opt-level 3, no LTO, overflow
+# checks off), stable 1.97, x86_64-unknown-linux-gnu with no RUSTFLAGS
+# (.github/workflows/check_lint_build.yaml). Float results do not depend on opt-level in
+# Rust (no fast-math, no FMA contraction); matrixmultiply picks its kernel at runtime.
+[profile.release]
+# panics unwind: every C entry point catches them (their node panics there; we reject)
+debug = false

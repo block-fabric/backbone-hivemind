@@ -1,0 +1,6 @@
+# Offline builds from the vendored crates (rust/fetch-vendor.sh).
+[source.crates-io]
+replace-with = "vendored-sources"
+
+[source.vendored-sources]
+directory = "vendor"

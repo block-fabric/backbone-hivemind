@@ -1,0 +1,9 @@
+[package]
+name = "openapi_dump"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+truthcoin_dc_app_rpc_api = { path = "../rpc-api" }
+serde_json = { workspace = true }
