@@ -2366,6 +2366,7 @@ bool AppLayer::start(std::string& err)
             o.pushKV("address", pv.address.to_string());
             o.pushKV("connected", pv.connected);
             o.pushKV("inbound", pv.inbound);
+            o.pushKV("name", pv.name);
             out.push_back(o);
         }
         return out;

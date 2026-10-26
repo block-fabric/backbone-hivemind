@@ -9,6 +9,7 @@
 #include <hivemind/app.h>
 #include <hivemind/appui.h>
 
+#include <bt/agent.h>
 #include <bt/frost.h>
 #include <bt/fsperm.h>
 #include <bt/jsonrpc.h>
@@ -25,7 +26,7 @@
 
 using namespace hivemind;
 
-static const char* OUR_VERSION = "backbone-truthcoin 0.1.0 (truthcoin-dc 0.20.0 compatible)";
+static const std::string OUR_VERSION = bt::agent() + " (Backbone drop-in; truthcoin-dc 0.20.0 compatible)";
 
 static std::atomic<bool> g_stop{false};
 static void on_signal(int) { g_stop = true; }
@@ -143,7 +144,7 @@ int main(int argc, char** argv)
             usage();
             return 0;
         } else if (a == "-V" || a == "--version") {
-            std::printf("truthcoin_dc_app %s\n%s\n", VERSION, OUR_VERSION);
+            std::printf("truthcoin_dc_app %s\n%s\n", VERSION, OUR_VERSION.c_str());
             return 0;
         } else if (a == "--add-peer") {
             if (!next(v)) return 2;
@@ -249,7 +250,7 @@ int main(int argc, char** argv)
     bt::log::set_file(logs, file_log_level);
     for (auto& u : unknown) LOG_WARN("ignoring unknown argument '%s'", u.c_str());
     if (!headless) LOG_INFO("no GUI in this build; running headless");
-    LOG_INFO("%s starting: datadir %s, network magic override %s, mainchain %s", OUR_VERSION, cfg.datadir.c_str(),
+    LOG_INFO("%s starting: datadir %s, network magic override %s, mainchain %s", OUR_VERSION.c_str(), cfg.datadir.c_str(),
              cfg.magic_override ? "yes" : "no", cfg.mainchain_grpc_url.c_str());
 
     std::signal(SIGINT, on_signal);
